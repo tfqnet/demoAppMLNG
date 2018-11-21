@@ -15,8 +15,5 @@ Ext.define('demoApp.view.main.MainController', {
         if (choice === 'yes') {
             //
         }
-    },
-
-    
-      
+    }
 });
