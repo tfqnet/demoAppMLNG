@@ -1,4 +1,11 @@
 {
+    "name": "demoApp",
+    "namespace": "demoApp",
+    "version": "1.0.0.0",
+    "framework": "ext",
+    "toolkit": "modern",
+    "theme": "theme-material",
+    
     "builds": {
         "web": {"default": true},
         "native": {
@@ -16,12 +23,7 @@
     },
 
                 
-    "name": "demoApp",
-    "namespace": "demoApp",
-    "version": "1.0.0.0",
-    "framework": "ext",
-    "toolkit": "modern",
-    "theme": "theme-material",
+
 
     /**
      * The list of required packages (with optional versions; default is "latest").
@@ -224,6 +226,9 @@
             "path": "${framework.dir}/build/ext-modern-all-debug.js"
         },
         {
+            "path":"resources/js/bootstrap.min.js"
+        },
+        {
             "path": "app.js",
             "bundle": true
         }
@@ -255,6 +260,9 @@
      *      }
      */
     "css": [
+        {
+            "path": "resources/css/bootstrap.css"
+        },
         {
             // this entry uses an ant variable that is the calculated
             // value of the generated output css file for the app,
