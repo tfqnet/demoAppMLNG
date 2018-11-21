@@ -25,19 +25,24 @@ Ext.define('demoApp.view.main.Main', {
             xtype: 'container',
             itemId: 'banner',
             hidden: true,
-            html: '<img style="width:100%;height:auto" src="resources/images/banner_1.png" />'
+            data: {
+                src: Constants.bannerUrl
+            },
+            tpl: '<img style="width:100%;height:auto" src="{src}" />'
         },
         {
-            xtype: 'video',
+            xtype: 'container',
             itemId: 'videoplayer',
             hidden: true,
-            url: 'resources/videos/video_1.mp4',
-            loop: true,
-            controls: true,
-            autoResume: true,
-            autoPause: true,
-            preload: true,
-            muted: false,
+            data: {
+                src: Constants.videoUrl
+            },
+            tpl: `
+                <video id="video" controls loop preload="auto" width="100%" height="auto">
+                <source src="{src}" type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
+            `
         }
     ],
     initialize: function () {
@@ -60,8 +65,9 @@ Ext.define('demoApp.view.main.Main', {
                     reject()
                 }
             }).catch(function (error) {
+                console.log('retry', counter)
                 counter++
-                if (counter < 3) {
+                if (counter < Constants.scanCounter) {
                     return handleScan()
                 }
             })
@@ -72,22 +78,20 @@ Ext.define('demoApp.view.main.Main', {
         }).then(function () {
             return new Promise(function (resolve, reject) {
                 banner.on('painted', function () {
-                    setTimeout(function () {
-                        banner.setHidden(true)
-                        videoPlayer.setHidden(false)
-                        videoPlayer.play()
-                        var elem = videoPlayer.media.dom
-                        if (elem.requestFullscreen) {
-                            elem.requestFullscreen();
-                        } else if (elem.mozRequestFullScreen) {
-                            elem.mozRequestFullScreen();
-                        } else if (elem.webkitRequestFullscreen) {
-                            elem.webkitRequestFullscreen();
-                        } else if (elem.msRequestFullscreen) {
-                            elem.msRequestFullscreen();
-                        }
-                        resolve()
-                    }, 1000)
+                    banner.setHidden(true)
+                    videoPlayer.setHidden(false)
+                    var elem = videoPlayer.element.getById('video').dom
+                    elem.play()
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.mozRequestFullScreen) {
+                        elem.mozRequestFullScreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) {
+                        elem.msRequestFullscreen();
+                    }
+                    resolve()
                 })
                 banner.setHidden(false)
             })

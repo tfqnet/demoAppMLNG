@@ -2296,22 +2296,6 @@ div.x-trigger.x-grouped {
     max-width: 90vw;
     max-height: 90vh;
 }
-/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/Video.scss:1 */
-.x-video {
-    height: 100%;
-    width: 100%;
-    background-color: #000;
-}
-/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/Video.scss:6 */
-.x-video > * {
-    height: 100%;
-    width: 100%;
-}
-/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/Video.scss:11 */
-.x-video .x-video-ghost {
-    background-size: 100% auto;
-    background: #000 center center no-repeat;
-}
 /* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/panel/Title.scss:1 */
 .x-paneltitle {
     display: flex;

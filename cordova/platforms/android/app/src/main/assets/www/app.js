@@ -132,6 +132,8 @@ $jscomp.iteratorFromArray = function(array, transform) {
     };
     return iter.next();
   }};
+  $jscomp.initSymbol();
+  $jscomp.initSymbolIterator();
   iter[Symbol.iterator] = function() {
     return iter;
   };
@@ -212,6 +214,8 @@ $jscomp.polyfill('Array.from', function(orig) {
       return x;
     };
     var result = [];
+    $jscomp.initSymbol();
+    $jscomp.initSymbolIterator();
     var iteratorFunction = arrayLike[Symbol.iterator];
     if (typeof iteratorFunction == 'function') {
       arrayLike = iteratorFunction.call(arrayLike);
@@ -293,6 +297,8 @@ $jscomp.polyfill('Array.prototype.values', function(orig) {
   return polyfill;
 }, 'es6', 'es3');
 $jscomp.makeIterator = function(iterable) {
+  $jscomp.initSymbolIterator();
+  $jscomp.initSymbol();
   $jscomp.initSymbolIterator();
   var iteratorFunction = iterable[Symbol.iterator];
   return iteratorFunction ? iteratorFunction.call(iterable) : $jscomp.arrayIterator(iterable);
@@ -761,6 +767,8 @@ $jscomp.polyfill('Map', function(NativeMap) {
       callback.call(opt_thisArg, entry[1], entry[0], this);
     }
   };
+  $jscomp.initSymbol();
+  $jscomp.initSymbolIterator();
   PolyfillMap.prototype[Symbol.iterator] = PolyfillMap.prototype.entries;
   var maybeGetEntry = function(map, key) {
     var id = getId(key);
@@ -1500,6 +1508,8 @@ $jscomp.polyfill('Set', function(NativeSet) {
     return this.map_.values();
   };
   PolyfillSet.prototype.keys = PolyfillSet.prototype.values;
+  $jscomp.initSymbol();
+  $jscomp.initSymbolIterator();
   PolyfillSet.prototype[Symbol.iterator] = PolyfillSet.prototype.values;
   PolyfillSet.prototype.forEach = function(callback, opt_thisArg) {
     var set = this;
@@ -42610,103 +42620,6 @@ Ext.define('Ext.Mask', {extend:Ext.Component, xtype:'mask', config:{transparent:
 }, updateTransparent:function(transparent) {
   this.toggleCls(this.baseCls + '-transparent', transparent);
 }});
-Ext.define('Ext.Media', {extend:Ext.Component, xtype:'media', config:{url:'', enableControls:true, controls:true, autoResume:false, autoPause:true, preload:true, loop:false, media:null, volume:1, muted:false}, constructor:function(config) {
-  this.mediaEvents = {};
-  this.callParent([config]);
-}, initialize:function() {
-  var me = this;
-  me.callParent();
-  me.on({scope:me, show:'onActivate', hide:'onDeactivate'});
-  me.addMediaListener({canplay:'onCanPlay', play:'onPlay', pause:'onPause', ended:'onEnd', volumechange:'onVolumeChange', timeupdate:'onTimeUpdate'});
-}, addMediaListener:function(event, fn) {
-  var me = this, dom = me.media.dom, bind = Ext.Function.bind;
-  Ext.Object.each(event, function(e, fn) {
-    fn = bind(me[fn], me);
-    me.mediaEvents[e] = fn;
-    dom.addEventListener(e, fn);
-  });
-}, onPlay:function() {
-  this.fireEvent('play', this);
-}, onCanPlay:function() {
-  this.fireEvent('canplay', this);
-}, onPause:function() {
-  this.fireEvent('pause', this, this.getCurrentTime());
-}, onEnd:function() {
-  this.fireEvent('ended', this, this.getCurrentTime());
-}, onVolumeChange:function() {
-  this.fireEvent('volumechange', this, this.media.dom.volume);
-}, onTimeUpdate:function() {
-  this.fireEvent('timeupdate', this, this.getCurrentTime());
-}, isPlaying:function() {
-  return !Boolean(this.media.dom.paused);
-}, onActivate:function() {
-  var me = this;
-  if (me.getAutoResume() && !me.isPlaying()) {
-    me.play();
-  }
-}, onDeactivate:function() {
-  var me = this;
-  if (me.getAutoPause() && me.isPlaying()) {
-    me.pause();
-  }
-}, updateUrl:function(newUrl) {
-  var dom = this.media.dom;
-  dom.src = newUrl;
-  if ('load' in dom) {
-    dom.load();
-  }
-  if (this.isPlaying()) {
-    this.play();
-  }
-}, updateEnableControls:function(enableControls) {
-  this.setControls(enableControls);
-}, updateControls:function(value) {
-  this.media.set({controls:value ? 'controls' : undefined});
-}, updateLoop:function(loop) {
-  this.media.dom.loop = loop ? 'loop' : false;
-}, play:function() {
-  var dom = this.media.dom;
-  if ('play' in dom) {
-    dom.play();
-    Ext.defer(function() {
-      dom.play();
-    }, 10);
-  }
-}, pause:function() {
-  var dom = this.media.dom;
-  if ('pause' in dom) {
-    dom.pause();
-  }
-}, toggle:function() {
-  if (this.isPlaying()) {
-    this.pause();
-  } else {
-    this.play();
-  }
-}, stop:function() {
-  var me = this;
-  me.setCurrentTime(0);
-  me.fireEvent('stop', me);
-  me.pause();
-}, updateVolume:function(volume) {
-  this.media.dom.volume = volume;
-}, updateMuted:function(muted) {
-  this.fireEvent('mutedchange', this, muted);
-  this.media.dom.muted = muted;
-}, getCurrentTime:function() {
-  return this.media.dom.currentTime;
-}, setCurrentTime:function(time) {
-  this.media.dom.currentTime = time;
-  return time;
-}, getDuration:function() {
-  return this.media.dom.duration;
-}, doDestroy:function() {
-  var me = this, dom = me.media.dom, mediaEvents = me.mediaEvents;
-  Ext.Object.each(mediaEvents, function(event, fn) {
-    dom.removeEventListener(event, fn);
-  });
-  me.callParent();
-}, deprecated:{'6.5':{configs:{enableControls:{message:'Please use "controls" instead.'}}}}});
 Ext.define('Ext.Dialog', {extend:Ext.Panel, xtype:['dialog', 'window'], alternateClassName:['Ext.Window', 'Ext.window.Window'], isDialog:true, isWindow:true, ariaRole:'dialog', classCls:Ext.baseCSSPrefix + 'dialog', cachedConfig:{dismissAction:['cancel', 'abort', 'no', 'close'], maximizeAnimation:{easing:'ease-in', from:{opacity:0.6}, to:{opacity:1}}, maximizeProxy:{centered:false, draggable:false, modal:false, showAnimation:null, hideAnimation:null}, maximizeTool:{itemId:'maximize', tooltip:'Maximize to fullscreen'}, 
 restoreAnimation:{easing:'ease-in', from:{opacity:1}, to:{opacity:0.6}}, restoreTool:{itemId:'restore', tooltip:'Restore to original size'}}, config:{constrainDrag:true, dismissHandler:null, maximizable:null, maximized:null, maskTapHandler:null, restorable:null}, border:true, bodyBorder:false, centered:true, floated:true, focusable:false, tabIndex:-1, draggable:{handle:'.' + Ext.baseCSSPrefix + 'draggable', listeners:{beforedragstart:'onBeforeDragDialog', scope:'this'}}, keyMap:{ESC:'onEscape', scope:'this'}, 
 modal:true, shadow:true, headerCls:Ext.baseCSSPrefix + 'dialogheader', titleCls:Ext.baseCSSPrefix + 'dialogtitle', toolCls:[Ext.baseCSSPrefix + 'paneltool', Ext.baseCSSPrefix + 'dialogtool'], hideMode:'offsets', hideAnimation:{type:'popOut', duration:250, easing:'ease-out'}, showAnimation:{type:'popIn', duration:150, easing:'ease-out'}, initialize:function() {
@@ -44164,54 +44077,6 @@ Ext.define('Ext.MessageBox', {extend:Ext.Dialog, xtype:'messagebox', config:{ico
     Ext.Msg = new Ext.MessageBox({id:'ext-messagebox'});
   });
 });
-Ext.define('Ext.Video', {extend:Ext.Media, xtype:'video', config:{posterUrl:null, showPosterOnPause:false}, baseCls:Ext.baseCSSPrefix + 'video', template:[{reference:'ghost', classList:[Ext.baseCSSPrefix + 'video-ghost']}, {tag:'video', reference:'media', classList:[Ext.baseCSSPrefix + 'media']}], initialize:function() {
-  var me = this;
-  me.callParent();
-  me.media.hide();
-  me.ghost.on({tap:'onGhostTap', scope:me});
-  me.media.on({pause:'onPause', scope:me});
-  if (Ext.os.is.Android4 || Ext.os.is.iPad) {
-    this.isInlineVideo = true;
-  }
-}, applyUrl:function(url) {
-  return [].concat(url);
-}, updateUrl:function(newUrl) {
-  var me = this, media = me.media, newLn = newUrl.length, existingSources = media.query('source'), oldLn = existingSources.length, i;
-  for (i = 0; i < oldLn; i++) {
-    Ext.fly(existingSources[i]).destroy();
-  }
-  for (i = 0; i < newLn; i++) {
-    media.appendChild(Ext.Element.create({tag:'source', src:newUrl[i]}));
-  }
-  if (me.isPlaying()) {
-    me.play();
-  }
-}, onActivate:function() {
-  this.media.show();
-}, onDeactivate:function() {
-  this.pause();
-  this.media.hide();
-  this.ghost.show();
-}, onGhostTap:function() {
-  var me = this, media = this.media, ghost = this.ghost;
-  media.show();
-  ghost.hide();
-  me.play();
-}, onPause:function(e) {
-  this.callParent([e]);
-  if (!this.isInlineVideo && !e.target.seeking && this.getShowPosterOnPause()) {
-    this.media.hide();
-    this.ghost.show();
-  }
-}, onPlay:function(e) {
-  this.callParent([e]);
-  this.media.show();
-}, updatePosterUrl:function(newUrl) {
-  var ghost = this.ghost;
-  if (ghost) {
-    ghost.setStyle('background-image', 'url(' + newUrl + ')');
-  }
-}});
 Ext.define('Ext.tip.ToolTip', {extend:Ext.Panel, xtype:'tooltip', floated:true, hidden:true, shadow:true, border:true, bodyBorder:false, anchor:false, closeAction:'hide', config:{align:'l-r?', alignDelegate:null, allowOver:null, anchorToTarget:true, autoHide:true, delegate:null, dismissDelay:5000, hideDelay:300, mouseOffset:[15, 18], quickShowInterval:250, showDelay:500, showOnTap:null, target:null, trackMouse:false}, classCls:Ext.baseCSSPrefix + 'tooltip', headerCls:Ext.baseCSSPrefix + 'tooltipheader', 
 titleCls:Ext.baseCSSPrefix + 'tooltiptitle', toolCls:[Ext.baseCSSPrefix + 'paneltool', Ext.baseCSSPrefix + 'tooltiptool'], closeToolText:null, constructor:function(config) {
   this.currentTarget = new Ext.dom.Fly;
@@ -44979,7 +44844,8 @@ Ext.define('demoApp.Application', {extend:Ext.app.Application, name:'demoApp', q
     }
   });
 }});
-Ext.define('demoApp.view.main.Main', {extend:Ext.Panel, xtype:'app-main', itemId:'main', fullscreen:true, layout:{type:'vbox', pack:'center'}, config:{cls:'main'}, controller:'main', items:[{xtype:'container', itemId:'banner', hidden:true, html:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"resources/images/banner_1.png" /\x3e'}, {xtype:'video', itemId:'videoplayer', hidden:true, url:'resources/videos/video_1.mp4', loop:true, controls:true, autoResume:true, autoPause:true, preload:true, muted:false}], 
+Ext.define('demoApp.Constants', {alternateClassName:'Constants', singleton:true, videoUrl:'resources/videos/video_1.mp4', bannerUrl:'resources/images/banner_1.png', scanCounter:3});
+Ext.define('demoApp.view.main.Main', {extend:Ext.Panel, xtype:'app-main', itemId:'main', fullscreen:true, layout:{type:'vbox', pack:'center'}, config:{cls:'main'}, controller:'main', items:[{xtype:'container', itemId:'banner', hidden:true, data:{src:Constants.bannerUrl}, tpl:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"{src}" /\x3e'}, {xtype:'container', itemId:'videoplayer', hidden:true, data:{src:Constants.videoUrl}, tpl:'\n                \x3cvideo id\x3d"video" controls loop preload\x3d"auto" width\x3d"100%" height\x3d"auto"\x3e\n                \x3csource src\x3d"{src}" type\x3d"video/mp4"\x3e\n                Your browser does not support the video tag.\n                \x3c/video\x3e\n            '}], 
 initialize:function() {
   var banner = this.queryById('banner');
   var videoPlayer = this.queryById('videoplayer');
@@ -44999,8 +44865,9 @@ initialize:function() {
         reject();
       }
     }))['catch'](function(error) {
+      console.log('retry', counter);
       counter++;
-      if (counter < 3) {
+      if (counter < Constants.scanCounter) {
         return handleScan();
       }
     });
@@ -45010,30 +44877,26 @@ initialize:function() {
   }).then(function() {
     return new Promise(function(resolve, reject) {
       banner.on('painted', function() {
-        setTimeout(function() {
-          banner.setHidden(true);
-          videoPlayer.setHidden(false);
-          setTimeout(function() {
-            videoPlayer.play();
-            var elem = videoPlayer.media.dom;
-            if (elem.requestFullscreen) {
-              elem.requestFullscreen();
+        banner.setHidden(true);
+        videoPlayer.setHidden(false);
+        var elem = videoPlayer.element.getById('video').dom;
+        elem.play();
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else {
+          if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+          } else {
+            if (elem.webkitRequestFullscreen) {
+              elem.webkitRequestFullscreen();
             } else {
-              if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-              } else {
-                if (elem.webkitRequestFullscreen) {
-                  elem.webkitRequestFullscreen();
-                } else {
-                  if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
-                  }
-                }
+              if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
               }
             }
-          }, 500);
-          resolve();
-        }, 1000);
+          }
+        }
+        resolve();
       });
       banner.setHidden(false);
     });
