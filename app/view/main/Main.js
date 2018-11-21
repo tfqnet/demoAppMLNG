@@ -19,12 +19,6 @@ Ext.define('demoApp.view.main.Main', {
     controller: 'main',
     
 
-    items:[
-        {
-            xtype : 'toolbar',
-            docked: 'top',
-            title: 'My Toolbar'
-        },
-    ],
+    html: "QR code here"
     
 });
