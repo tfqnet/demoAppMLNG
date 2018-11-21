@@ -44844,7 +44844,7 @@ Ext.define('demoApp.Application', {extend:Ext.app.Application, name:'demoApp', q
     }
   });
 }});
-Ext.define('demoApp.Constants', {alternateClassName:'Constants', singleton:true, videoUrl:'resources/videos/video_1.mp4', bannerUrl:'resources/images/banner_1.png', scanCounter:3});
+Ext.define('demoApp.Constants', {alternateClassName:'Constants', singleton:true, videoUrl:'resources/videos/video_1.mp4', bannerUrl:'resources/images/banner_1.png', scanCounter:3, bannerTime:5000});
 Ext.define('demoApp.view.main.Main', {extend:Ext.Panel, xtype:'app-main', itemId:'main', fullscreen:true, layout:{type:'vbox', pack:'center'}, config:{cls:'main'}, controller:'main', items:[{xtype:'container', itemId:'banner', hidden:true, data:{src:Constants.bannerUrl}, tpl:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"{src}" /\x3e'}, {xtype:'container', itemId:'videoplayer', hidden:true, data:{src:Constants.videoUrl}, tpl:'\n                \x3cvideo id\x3d"video" controls loop preload\x3d"auto" width\x3d"100%" height\x3d"auto"\x3e\n                \x3csource src\x3d"{src}" type\x3d"video/mp4"\x3e\n                Your browser does not support the video tag.\n                \x3c/video\x3e\n            '}], 
 initialize:function() {
   var banner = this.queryById('banner');
@@ -44877,30 +44877,36 @@ initialize:function() {
   }).then(function() {
     return new Promise(function(resolve, reject) {
       banner.on('painted', function() {
-        banner.setHidden(true);
-        videoPlayer.setHidden(false);
-        var elem = videoPlayer.element.getById('video').dom;
-        elem.play();
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else {
-          if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen();
-          } else {
-            if (elem.webkitRequestFullscreen) {
-              elem.webkitRequestFullscreen();
-            } else {
-              if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-              }
-            }
-          }
-        }
         resolve();
       });
       banner.setHidden(false);
     });
   }).then(function() {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve();
+      }, Constants.bannerTime);
+    });
+  }).then(function() {
+    banner.setHidden(true);
+    videoPlayer.setHidden(false);
+    var elem = videoPlayer.element.getById('video').dom;
+    elem.play();
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else {
+      if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else {
+        if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else {
+          if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+          }
+        }
+      }
+    }
   });
 }, scan:function(callback) {
   cordova.plugins.barcodeScanner.scan(function(result) {

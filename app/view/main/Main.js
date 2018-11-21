@@ -78,25 +78,30 @@ Ext.define('demoApp.view.main.Main', {
         }).then(function () {
             return new Promise(function (resolve, reject) {
                 banner.on('painted', function () {
-                    banner.setHidden(true)
-                    videoPlayer.setHidden(false)
-                    var elem = videoPlayer.element.getById('video').dom
-                    elem.play()
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.mozRequestFullScreen) {
-                        elem.mozRequestFullScreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
                     resolve()
                 })
                 banner.setHidden(false)
             })
         }).then(function () {
-
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve()
+                }, Constants.bannerTime)
+            })
+        }).then(function () {
+            banner.setHidden(true)
+            videoPlayer.setHidden(false)
+            var elem = videoPlayer.element.getById('video').dom
+            elem.play()
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
         })
     },
     scan: function (callback) {
