@@ -10,7 +10,8 @@
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "my.com.petronas.demoApp"
     },
-    "cordova-plugin-qrscanner": {
+    "phonegap-plugin-barcodescanner": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
       "PACKAGE_NAME": "my.com.petronas.demoApp"
     }
   },

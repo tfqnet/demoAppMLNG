@@ -28,21 +28,6 @@ Ext.define('demoApp.view.main.Main', {
             html: '<img style="width:100%;height:auto" src="resources/images/banner_1.png" />'
         },
         {
-            xtype: 'container',
-            itemId: 'qrcode',
-            html: 'QR Code ' + new Date(),
-            style: 'width:100%;height:100%',
-            listeners: [
-                {
-                    tap: function () {
-                        var component = this.component.up('app-main')
-                        component.scan()
-                    },
-                    element: 'element'
-                }
-            ]
-        },
-        {
             xtype: 'video',
             itemId: 'videoplayer',
             hidden: true,
@@ -51,42 +36,66 @@ Ext.define('demoApp.view.main.Main', {
             controls: true,
             autoResume: true,
             autoPause: true,
-            preload: true
-        }
-    ],
-    listeners: [
-        {
-            painted: function () {
-            }
+            preload: true,
+            muted: false,
         }
     ],
     initialize: function () {
         var banner = this.queryById('banner')
-        var qrcode = this.queryById('qrcode')
         var videoPlayer = this.queryById('videoplayer')
-        var flow = new Promise(function (resolve, reject) {
-            qrcode.on('scan', function () {
-                qrcode.setHidden(true)
-                banner.setHidden(false)
-                resolve()
+        var me = this
+
+        var counter = 0
+        var handleScan = function () {
+            return new Promise(function (resolve, reject) {
+                try {
+                    me.scan(function (success, text) {
+                        if (success) {
+                            resolve(text)
+                        } else {
+                            reject()
+                        }
+                    })
+                } catch (ex) {
+                    reject()
+                }
+            }).catch(function (error) {
+                counter++
+                if (counter < 3) {
+                    return handleScan()
+                }
             })
+        }
+
+        var flow = Promise.resolve().then(function () {
+            return handleScan()
         }).then(function () {
             return new Promise(function (resolve, reject) {
                 banner.on('painted', function () {
                     setTimeout(function () {
                         banner.setHidden(true)
                         videoPlayer.setHidden(false)
-                        videoPlayer.media.dom.play()
-                        videoPlayer.media.dom.webkitEnterFullscreen()
+                        videoPlayer.play()
+                        var elem = videoPlayer.media.dom
+                        if (elem.requestFullscreen) {
+                            elem.requestFullscreen();
+                        } else if (elem.mozRequestFullScreen) {
+                            elem.mozRequestFullScreen();
+                        } else if (elem.webkitRequestFullscreen) {
+                            elem.webkitRequestFullscreen();
+                        } else if (elem.msRequestFullscreen) {
+                            elem.msRequestFullscreen();
+                        }
                         resolve()
                     }, 1000)
                 })
+                banner.setHidden(false)
             })
         }).then(function () {
 
         })
     },
-    scan: function () {
+    scan: function (callback) {
         cordova.plugins.barcodeScanner.scan(
             function (result) {
                 if (result.format == 'QR_CODE') {
@@ -97,22 +106,13 @@ Ext.define('demoApp.view.main.Main', {
                     //        "Launching Appoval Success !");
 
                     console.log('scan success');
-                    // callback(true, result.text);
+                    callback(true, result.text);
                 } else {
-                    // callback(false, null);
-                    // Ext.Msg.show({
-                    //     title: "Scan Error",
-                    //     message: "Please scan again.",
-                    //     buttons: Ext.MessageBox.OK,
-                    // });
+                    callback(false, null);
                 }
             },
             function (error) {
-                Ext.Msg.show({
-                    title: "Scan Error",
-                    message: "Please scan again.",
-                    buttons: Ext.MessageBox.OK,
-                });
+                callback(false, null)
             }, {
                 prompt: "Place a QRcode inside the scan area",
                 orientation: "potrait",
