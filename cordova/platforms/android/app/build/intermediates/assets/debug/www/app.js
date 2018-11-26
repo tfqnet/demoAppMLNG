@@ -41187,6 +41187,14 @@ Ext.define('Ext.fx.runner.CssTransition', {extend:Ext.fx.runner.Css, alternateCl
     Ext.apply(me.transitionQueue, {toData:{}, transitionData:{}});
   }
 }});
+Ext.define('Ext.fx.easing.EaseOut', {extend:Ext.fx.easing.Linear, alias:'easing.ease-out', config:{exponent:4, duration:1500}, getValue:function() {
+  var deltaTime = Ext.Date.now() - this.getStartTime(), duration = this.getDuration(), startValue = this.getStartValue(), endValue = this.getEndValue(), distance = this.distance, theta = deltaTime / duration, thetaC = 1 - theta, thetaEnd = 1 - Math.pow(thetaC, this.getExponent()), currentValue = startValue + thetaEnd * distance;
+  if (deltaTime >= duration) {
+    this.isEnded = true;
+    return endValue;
+  }
+  return currentValue;
+}});
 Ext.define('Ext.util.ClickRepeater', {alternateClassName:'Ext.util.TapRepeater', mixins:[Ext.mixin.Observable], config:{el:null, target:null, disabled:null}, interval:20, delay:250, preventDefault:true, stopDefault:false, timer:0, handler:null, scope:null, constructor:function(config) {
   var me = this;
   if (arguments.length === 2) {
@@ -42619,6 +42627,87 @@ Ext.define('Ext.Mask', {extend:Ext.Component, xtype:'mask', config:{transparent:
   this.fireEvent('tap', this, e);
 }, updateTransparent:function(transparent) {
   this.toggleCls(this.baseCls + '-transparent', transparent);
+}});
+Ext.define('Ext.Decorator', {extend:Ext.Component, isDecorator:true, config:{component:{xtype:'component'}}, statics:{generateProxySetter:function(name) {
+  return function(value) {
+    var component = this.getComponent();
+    component[name].call(component, value);
+    return this;
+  };
+}, generateProxyGetter:function(name) {
+  return function() {
+    var component = this.getComponent();
+    return component[name].call(component);
+  };
+}}, onClassExtended:function(Class, members) {
+  if (!members.hasOwnProperty('proxyConfig')) {
+    return;
+  }
+  var ExtClass = Ext.Class, proxyConfig = members.proxyConfig, config = members.config;
+  members.config = config ? Ext.applyIf(config, proxyConfig) : proxyConfig;
+  var name, nameMap, setName, getName;
+  for (name in proxyConfig) {
+    if (proxyConfig.hasOwnProperty(name)) {
+      nameMap = Ext.Config.get(name).names;
+      setName = nameMap.set;
+      getName = nameMap.get;
+      members[setName] = this.generateProxySetter(setName);
+      members[getName] = this.generateProxyGetter(getName);
+    }
+  }
+}, getRefItems:function(deep) {
+  var c = this.getComponent(), ret;
+  if (c) {
+    ret = [c];
+    if (deep && c.getRefItems) {
+      ret = ret.concat(c.getRefItems(deep));
+    }
+  }
+  return ret || [];
+}, applyComponent:function(config) {
+  var result = Ext.factory(config);
+  result.ownerCmp = this;
+  return result;
+}, updateComponent:function(newComponent, oldComponent) {
+  var me = this;
+  if (oldComponent) {
+    if (me.isRendered() && oldComponent.rendered) {
+      oldComponent.setRendered(false);
+      oldComponent.fireEventedAction('renderedchange', [me, oldComponent, false], me.doUnsetComponent, me, false);
+    } else {
+      me.doUnsetComponent(oldComponent);
+    }
+  }
+  if (newComponent) {
+    if (me.isRendered() && !newComponent.rendered) {
+      newComponent.fireEventedAction('renderedchange', [me, newComponent, true], me.doSetComponent, me, false);
+    } else {
+      me.doSetComponent(newComponent);
+    }
+  }
+}, doUnsetComponent:function(component) {
+  var dom = component.renderElement.dom;
+  if (dom) {
+    this.bodyElement.dom.removeChild(dom);
+  }
+}, doSetComponent:function(component) {
+  var dom = component.renderElement.dom;
+  if (dom) {
+    this.bodyElement.dom.appendChild(dom);
+    if (this.rendered) {
+      component.setRendered(true);
+    }
+  }
+}, setDisabled:function(disabled) {
+  var component;
+  this.callParent(arguments);
+  component = this.getComponent();
+  if (component) {
+    component.setDisabled(disabled);
+  }
+}, doDestroy:function() {
+  Ext.destroy(this.getComponent());
+  this.callParent();
 }});
 Ext.define('Ext.Dialog', {extend:Ext.Panel, xtype:['dialog', 'window'], alternateClassName:['Ext.Window', 'Ext.window.Window'], isDialog:true, isWindow:true, ariaRole:'dialog', classCls:Ext.baseCSSPrefix + 'dialog', cachedConfig:{dismissAction:['cancel', 'abort', 'no', 'close'], maximizeAnimation:{easing:'ease-in', from:{opacity:0.6}, to:{opacity:1}}, maximizeProxy:{centered:false, draggable:false, modal:false, showAnimation:null, hideAnimation:null}, maximizeTool:{itemId:'maximize', tooltip:'Maximize to fullscreen'}, 
 restoreAnimation:{easing:'ease-in', from:{opacity:1}, to:{opacity:0.6}}, restoreTool:{itemId:'restore', tooltip:'Restore to original size'}}, config:{constrainDrag:true, dismissHandler:null, maximizable:null, maximized:null, maskTapHandler:null, restorable:null}, border:true, bodyBorder:false, centered:true, floated:true, focusable:false, tabIndex:-1, draggable:{handle:'.' + Ext.baseCSSPrefix + 'draggable', listeners:{beforedragstart:'onBeforeDragDialog', scope:'this'}}, keyMap:{ESC:'onEscape', scope:'this'}, 
@@ -44077,6 +44166,386 @@ Ext.define('Ext.MessageBox', {extend:Ext.Dialog, xtype:'messagebox', config:{ico
     Ext.Msg = new Ext.MessageBox({id:'ext-messagebox'});
   });
 });
+Ext.define('Ext.carousel.Item', {extend:Ext.Decorator, config:{component:null, translatable:true}, baseCls:Ext.baseCSSPrefix + 'carousel-item'});
+Ext.define('Ext.util.TranslatableGroup', {extend:Ext.util.translatable.Abstract, config:{items:[], activeIndex:0, itemLength:{x:0, y:0}}, applyItems:function(items) {
+  return Ext.Array.from(items);
+}, doTranslate:function(x, y) {
+  var items = this.getItems(), activeIndex = this.getActiveIndex(), itemLength = this.getItemLength(), itemLengthX = itemLength.x, itemLengthY = itemLength.y, useX = Ext.isNumber(x), useY = Ext.isNumber(y), offset, i, ln, item, translateX, translateY;
+  for (i = 0, ln = items.length; i < ln; i++) {
+    item = items[i];
+    if (item) {
+      offset = i - activeIndex;
+      if (useX) {
+        translateX = x + offset * itemLengthX;
+      }
+      if (useY) {
+        translateY = y + offset * itemLengthY;
+      }
+      item.translate(translateX, translateY);
+    }
+  }
+}});
+Ext.define('Ext.carousel.Carousel', {extend:Ext.Container, alternateClassName:'Ext.Carousel', xtype:'carousel', config:{direction:'horizontal', animation:{duration:250, easing:{type:'ease-out'}}, indicator:true, ui:'dark', itemConfig:{translatable:{type:'csstransform'}}, bufferSize:1, itemLength:null}, baseCls:Ext.baseCSSPrefix + 'carousel', itemLength:0, offset:0, flickStartOffset:0, flickStartTime:0, dragDirection:0, count:0, painted:false, activeIndex:-1, beforeInitialize:function() {
+  var me = this;
+  me.element.on({resize:'onSizeChange', dragstart:'onDragStart', drag:'onDrag', dragend:'onDragEnd', dragcancel:'onDragEnd', scope:me});
+  me.carouselItems = [];
+  me.orderedCarouselItems = [];
+  me.inactiveCarouselItems = [];
+  me.hiddenTranslation = 0;
+}, updateBufferSize:function(size) {
+  var ItemClass = Ext.carousel.Item, total = size * 2 + 1, isRendered = this.isRendered(), bodyElement = this.bodyElement, items = this.carouselItems, ln = items.length, itemConfig = Ext.apply({ownerCmp:this}, this.getItemConfig()), itemLength = this.getItemLength(), direction = this.getDirection(), setterName = direction === 'horizontal' ? 'setWidth' : 'setHeight', i, item;
+  for (i = ln; i < total; i++) {
+    item = Ext.factory(itemConfig, ItemClass);
+    if (itemLength) {
+      item[setterName].call(item, itemLength);
+    }
+    items.push(item);
+    bodyElement.append(item.renderElement);
+    if (isRendered && item.setRendered(true)) {
+      item.fireEvent('renderedchange', this, item, true);
+    }
+  }
+  this.getTranslatable().setActiveIndex(size);
+}, onSizeChange:function() {
+  this.refreshSizing();
+  this.refreshCarouselItems();
+  this.refreshActiveItem();
+}, onItemAdd:function(item, index) {
+  this.callParent([item, index]);
+  var innerIndex = this.getInnerItems().indexOf(item), indicator = this.getIndicator();
+  if (indicator && item.isInnerItem()) {
+    indicator.add();
+  }
+  if (innerIndex <= this.getActiveIndex()) {
+    this.refreshActiveIndex();
+  }
+  if (this.isIndexDirty(innerIndex) && !this.isItemsInitializing) {
+    this.refreshActiveItem();
+  }
+}, doItemLayoutAdd:function(item, index, destroying) {
+  if (item.isInnerItem()) {
+    return;
+  }
+  this.callParent(arguments);
+}, onItemRemove:function(item, index, destroying) {
+  this.callParent(arguments);
+  var innerIndex = this.getInnerItems().indexOf(item), indicator = this.getIndicator(), carouselItems = this.carouselItems, i, ln, carouselItem;
+  if (item.isInnerItem() && indicator) {
+    indicator.remove();
+  }
+  if (innerIndex <= this.getActiveIndex()) {
+    this.refreshActiveIndex();
+  }
+  if (this.isIndexDirty(innerIndex)) {
+    for (i = 0, ln = carouselItems.length; i < ln; i++) {
+      carouselItem = carouselItems[i];
+      if (carouselItem.getComponent() === item) {
+        carouselItem.setComponent(null);
+        break;
+      }
+    }
+    this.refreshActiveItem();
+  }
+}, doItemLayoutRemove:function(item) {
+  if (item.isInnerItem()) {
+    return;
+  }
+  this.callParent(arguments);
+}, onInnerItemMove:function(item, toIndex, fromIndex) {
+  if (this.isIndexDirty(toIndex) || this.isIndexDirty(fromIndex)) {
+    this.refreshActiveItem();
+  }
+}, doItemLayoutMove:function(item) {
+  if (item.isInnerItem()) {
+    return;
+  }
+  this.callParent(arguments);
+}, isIndexDirty:function(index) {
+  var activeIndex = this.getActiveIndex(), bufferSize = this.getBufferSize();
+  return index >= activeIndex - bufferSize && index <= activeIndex + bufferSize;
+}, getTranslatable:function() {
+  var me = this, translatable = me.translatable;
+  if (!translatable) {
+    me.translatable = translatable = new Ext.util.TranslatableGroup;
+    translatable.setItems(me.orderedCarouselItems);
+    translatable.on('animationend', 'onAnimationEnd', me);
+  }
+  return translatable;
+}, onDragStart:function(e) {
+  var direction = this.getDirection(), absDeltaX = e.absDeltaX, absDeltaY = e.absDeltaY;
+  this.isDragging = true;
+  if (direction === 'horizontal' && absDeltaX > absDeltaY || direction === 'vertical' && absDeltaY > absDeltaX) {
+    e.stopPropagation();
+  } else {
+    this.isDragging = false;
+    return;
+  }
+  this.getTranslatable().stopAnimation();
+  this.dragStartOffset = this.offset;
+  this.dragDirection = 0;
+}, onDrag:function(e) {
+  if (!this.isDragging) {
+    return;
+  }
+  var startOffset = this.dragStartOffset, direction = this.getDirection(), delta = direction === 'horizontal' ? e.deltaX : e.deltaY, lastOffset = this.offset, flickStartTime = this.flickStartTime, dragDirection = this.dragDirection, now = Ext.Date.now(), currentActiveIndex = this.getActiveIndex(), maxIndex = this.getMaxItemIndex(), lastDragDirection = dragDirection, offset;
+  if (currentActiveIndex === 0 && delta > 0 || currentActiveIndex === maxIndex && delta < 0) {
+    delta *= 0.5;
+  }
+  offset = startOffset + delta;
+  if (offset > lastOffset) {
+    dragDirection = 1;
+  } else {
+    if (offset < lastOffset) {
+      dragDirection = -1;
+    }
+  }
+  if (dragDirection !== lastDragDirection || now - flickStartTime > 300) {
+    this.flickStartOffset = lastOffset;
+    this.flickStartTime = now;
+  }
+  this.dragDirection = dragDirection;
+  this.setOffset(offset);
+}, onDragEnd:function(e) {
+  if (!this.isDragging) {
+    return;
+  }
+  this.onDrag(e);
+  this.isDragging = false;
+  var now = Ext.Date.now(), itemLength = this.itemLength, threshold = itemLength / 2, offset = this.offset, activeIndex = this.getActiveIndex(), maxIndex = this.getMaxItemIndex(), animationDirection = 0, flickDistance = offset - this.flickStartOffset, flickDuration = now - this.flickStartTime, indicator = this.getIndicator(), velocity;
+  if (flickDuration > 0 && Math.abs(flickDistance) >= 10) {
+    velocity = flickDistance / flickDuration;
+    if (Math.abs(velocity) >= 1) {
+      if (velocity < 0 && activeIndex < maxIndex) {
+        animationDirection = -1;
+      } else {
+        if (velocity > 0 && activeIndex > 0) {
+          animationDirection = 1;
+        }
+      }
+    }
+  }
+  if (animationDirection === 0) {
+    if (activeIndex < maxIndex && offset < -threshold) {
+      animationDirection = -1;
+    } else {
+      if (activeIndex > 0 && offset > threshold) {
+        animationDirection = 1;
+      }
+    }
+  }
+  if (indicator) {
+    indicator.setActiveIndex(activeIndex - animationDirection);
+  }
+  this.animationDirection = animationDirection;
+  this.setOffsetAnimated(animationDirection * itemLength);
+}, onRender:function() {
+  this.callParent();
+  this.refresh();
+}, applyAnimation:function(animation) {
+  animation.easing = Ext.factory(animation.easing, Ext.fx.easing.EaseOut);
+  return animation;
+}, updateDirection:function(direction) {
+  var indicator = this.getIndicator(), vertical = direction === 'vertical';
+  this.currentAxis = vertical ? 'y' : 'x';
+  this.setTouchAction(vertical ? {panY:false} : {panX:false});
+  if (indicator) {
+    indicator.setDirection(direction);
+  }
+}, setOffset:function(offset) {
+  this.offset = offset;
+  if (Ext.isNumber(this.itemOffset)) {
+    this.getTranslatable().translateAxis(this.currentAxis, offset + this.itemOffset);
+  }
+  return this;
+}, setOffsetAnimated:function(offset) {
+  var indicator = this.getIndicator();
+  if (indicator) {
+    indicator.setActiveIndex(this.getActiveIndex() - this.animationDirection);
+  }
+  this.offset = offset;
+  this.getTranslatable().translateAxis(this.currentAxis, offset + this.itemOffset, this.getAnimation());
+  return this;
+}, onAnimationEnd:function(translatable) {
+  if (this.destroyed) {
+    return;
+  }
+  var currentActiveIndex = this.getActiveIndex(), animationDirection = this.animationDirection, axis = this.currentAxis, currentOffset = translatable[axis], itemLength = this.itemLength, offset;
+  if (animationDirection === -1) {
+    offset = itemLength + currentOffset;
+  } else {
+    if (animationDirection === 1) {
+      offset = currentOffset - itemLength;
+    } else {
+      offset = currentOffset;
+    }
+  }
+  offset -= this.itemOffset;
+  this.offset = offset;
+  this.setActiveItem(currentActiveIndex - animationDirection);
+}, refresh:function() {
+  this.refreshSizing();
+  this.refreshActiveItem();
+}, refreshSizing:function() {
+  var element = this.element, itemLength = this.getItemLength(), translatableItemLength = {x:0, y:0}, itemOffset, containerSize;
+  if (this.getDirection() === 'horizontal') {
+    containerSize = element.getWidth();
+  } else {
+    containerSize = element.getHeight();
+  }
+  this.hiddenTranslation = -containerSize;
+  if (itemLength === null) {
+    itemLength = containerSize;
+    itemOffset = 0;
+  } else {
+    itemOffset = (containerSize - itemLength) / 2;
+  }
+  this.itemLength = itemLength;
+  this.itemOffset = itemOffset;
+  translatableItemLength[this.currentAxis] = itemLength;
+  this.getTranslatable().setItemLength(translatableItemLength);
+}, refreshOffset:function() {
+  this.setOffset(this.offset);
+}, refreshActiveItem:function() {
+  this.updateActiveItem(this.getActiveItem());
+}, getActiveIndex:function() {
+  return this.activeIndex;
+}, refreshActiveIndex:function() {
+  this.activeIndex = this.getInnerItemIndex(this.getActiveItem());
+}, refreshCarouselItems:function() {
+  var items = this.carouselItems, i, ln, item;
+  for (i = 0, ln = items.length; i < ln; i++) {
+    item = items[i];
+    item.getTranslatable().refresh();
+  }
+  this.refreshInactiveCarouselItems();
+}, refreshInactiveCarouselItems:function() {
+  var items = this.inactiveCarouselItems, hiddenTranslation = this.hiddenTranslation, axis = this.currentAxis, i, ln, item;
+  for (i = 0, ln = items.length; i < ln; i++) {
+    item = items[i];
+    item.translateAxis(axis, hiddenTranslation);
+  }
+}, getMaxItemIndex:function() {
+  return this.innerItems.length - 1;
+}, getInnerItemIndex:function(item) {
+  return this.innerItems.indexOf(item);
+}, getInnerItemAt:function(index) {
+  return this.innerItems[index];
+}, applyActiveItem:function(activeItem, oldActiveItem) {
+  var activeIndex;
+  activeItem = this.callParent([activeItem, oldActiveItem]);
+  if (activeItem) {
+    activeIndex = this.getInnerItemIndex(activeItem);
+    if (activeIndex !== -1) {
+      this.activeIndex = activeIndex;
+      return activeItem;
+    }
+  }
+}, updateActiveItem:function(activeItem, oldActiveItem) {
+  var me = this, activeIndex = me.getActiveIndex(), maxIndex = me.getMaxItemIndex(), indicator = me.getIndicator(), bufferSize = me.getBufferSize(), carouselItems = me.carouselItems.slice(), orderedCarouselItems = this.orderedCarouselItems, visibleIndexes = {}, visibleItems = {}, visibleItem, component, id, i, index, ln, carouselItem;
+  if (carouselItems.length === 0) {
+    return;
+  }
+  me.callParent([activeItem, oldActiveItem]);
+  orderedCarouselItems.length = 0;
+  if (activeItem) {
+    id = activeItem.getId();
+    visibleItems[id] = activeItem;
+    visibleIndexes[id] = bufferSize;
+    if (activeIndex > 0) {
+      for (i = 1; i <= bufferSize; i++) {
+        index = activeIndex - i;
+        if (index >= 0) {
+          visibleItem = me.getInnerItemAt(index);
+          id = visibleItem.getId();
+          visibleItems[id] = visibleItem;
+          visibleIndexes[id] = bufferSize - i;
+        } else {
+          break;
+        }
+      }
+    }
+    if (activeIndex < maxIndex) {
+      for (i = 1; i <= bufferSize; i++) {
+        index = activeIndex + i;
+        if (index <= maxIndex) {
+          visibleItem = me.getInnerItemAt(index);
+          id = visibleItem.getId();
+          visibleItems[id] = visibleItem;
+          visibleIndexes[id] = bufferSize + i;
+        } else {
+          break;
+        }
+      }
+    }
+    for (i = 0, ln = carouselItems.length; i < ln; i++) {
+      carouselItem = carouselItems[i];
+      component = carouselItem.getComponent();
+      if (component) {
+        id = component.getId();
+        if (visibleIndexes.hasOwnProperty(id)) {
+          carouselItems.splice(i, 1);
+          i--;
+          ln--;
+          delete visibleItems[id];
+          orderedCarouselItems[visibleIndexes[id]] = carouselItem;
+        }
+      }
+    }
+    for (id in visibleItems) {
+      if (visibleItems.hasOwnProperty(id)) {
+        visibleItem = visibleItems[id];
+        carouselItem = carouselItems.pop();
+        carouselItem.setComponent(visibleItem);
+        orderedCarouselItems[visibleIndexes[id]] = carouselItem;
+      }
+    }
+  }
+  me.inactiveCarouselItems.length = 0;
+  me.inactiveCarouselItems = carouselItems;
+  me.refreshOffset();
+  me.refreshInactiveCarouselItems();
+  if (indicator && !indicator.isDestroying && activeIndex !== -1) {
+    indicator.sync(me.getInnerItems().length, activeIndex);
+  }
+}, next:function() {
+  this.setOffset(0);
+  if (this.activeIndex === this.getMaxItemIndex()) {
+    return this;
+  }
+  this.animationDirection = -1;
+  this.setOffsetAnimated(-this.itemLength);
+  return this;
+}, previous:function() {
+  this.setOffset(0);
+  if (this.activeIndex === 0) {
+    return this;
+  }
+  this.animationDirection = 1;
+  this.setOffsetAnimated(this.itemLength);
+  return this;
+}, applyIndicator:function(indicator, currentIndicator) {
+  return Ext.factory(indicator, Ext.Indicator, currentIndicator);
+}, updateIndicator:function(indicator) {
+  var me = this, bottom, right;
+  if (indicator) {
+    if (me.getDirection() === 'horizontal') {
+      bottom = 0;
+      right = null;
+    } else {
+      bottom = null;
+      right = 0;
+    }
+    indicator.setRight(right).setBottom(bottom).setUi(me.getUi()).on({indicatortap:'onIndicatorTap', next:'next', previous:'previous', scope:me});
+    me.insertFirst(indicator);
+  }
+}, onIndicatorTap:function(indicator, index) {
+  this.setActiveItem(index);
+}, doDestroy:function() {
+  var me = this, carouselItems = me.carouselItems.slice();
+  me.carouselItems.length = 0;
+  Ext.destroy(carouselItems, me.getIndicator(), me.translatable);
+  me.callParent();
+}});
 Ext.define('Ext.tip.ToolTip', {extend:Ext.Panel, xtype:'tooltip', floated:true, hidden:true, shadow:true, border:true, bodyBorder:false, anchor:false, closeAction:'hide', config:{align:'l-r?', alignDelegate:null, allowOver:null, anchorToTarget:true, autoHide:true, delegate:null, dismissDelay:5000, hideDelay:300, mouseOffset:[15, 18], quickShowInterval:250, showDelay:500, showOnTap:null, target:null, trackMouse:false}, classCls:Ext.baseCSSPrefix + 'tooltip', headerCls:Ext.baseCSSPrefix + 'tooltipheader', 
 titleCls:Ext.baseCSSPrefix + 'tooltiptitle', toolCls:[Ext.baseCSSPrefix + 'paneltool', Ext.baseCSSPrefix + 'tooltiptool'], closeToolText:null, constructor:function(config) {
   this.currentTarget = new Ext.dom.Fly;
@@ -44464,6 +44933,8 @@ right:Ext.baseCSSPrefix + 'icon-align-right', bottom:Ext.baseCSSPrefix + 'icon-a
 }, syncIconVisibility:function() {
   this.el.toggleCls(this.hasIconCls, !!(this.getIcon() || this.getIconCls()));
 }}, deprecated:{'6.5':{configs:{glyph:null}}}});
+Ext.define('Ext.layout.Fit', {extend:Ext.layout.Auto, alias:'layout.fit', isFit:true, cls:Ext.baseCSSPrefix + 'layout-fit', itemCls:Ext.baseCSSPrefix + 'layout-fit-item'});
+Ext.define('Ext.layout.Center', {extend:Ext.layout.Auto, alias:'layout.center', cls:Ext.baseCSSPrefix + 'layout-center', itemCls:Ext.baseCSSPrefix + 'layout-center-item'});
 Ext.define('Ext.panel.Header', {extend:Ext.Container, xtype:'panelheader', isPanelHeader:true, config:{icon:null, iconAlign:null, iconCls:null, titleRotation:'auto', title:null, titleAlign:null, layout:{type:'box', vertical:false, align:'center'}, position:null}, autoSize:null, classCls:Ext.baseCSSPrefix + 'panelheader', verticalCls:Ext.baseCSSPrefix + 'vertical', horizontalCls:Ext.baseCSSPrefix + 'horizontal', toolEndCls:Ext.baseCSSPrefix + 'end', toolStartCls:Ext.baseCSSPrefix + 'start', rotationMap:{top:'0', 
 right:'90', bottom:'0', left:'270'}, dockCls:{top:Ext.baseCSSPrefix + 'docked-top', right:Ext.baseCSSPrefix + 'docked-right', bottom:Ext.baseCSSPrefix + 'docked-bottom', left:Ext.baseCSSPrefix + 'docked-left'}, weighted:true, vertical:false, inheritUi:true, addTools:function(tools) {
   var items = Ext.Array.from(tools);
@@ -44844,11 +45315,24 @@ Ext.define('demoApp.Application', {extend:Ext.app.Application, name:'demoApp', q
     }
   });
 }});
-Ext.define('demoApp.Constants', {alternateClassName:'Constants', singleton:true, videoUrl:'resources/videos/video_1.mp4', bannerUrl:'resources/images/banner_1.png', scanCounter:3, bannerTime:5000});
-Ext.define('demoApp.view.main.Main', {extend:Ext.Panel, xtype:'app-main', itemId:'main', fullscreen:true, layout:{type:'vbox', pack:'center'}, config:{cls:'main'}, controller:'main', items:[{xtype:'container', itemId:'banner', hidden:true, data:{src:Constants.bannerUrl}, tpl:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"{src}" /\x3e'}, {xtype:'container', itemId:'videoplayer', hidden:true, data:{src:Constants.videoUrl}, tpl:'\n                \x3cvideo id\x3d"video" controls loop preload\x3d"auto" width\x3d"100%" height\x3d"auto"\x3e\n                \x3csource src\x3d"{src}" type\x3d"video/mp4"\x3e\n                Your browser does not support the video tag.\n                \x3c/video\x3e\n            '}], 
+Ext.define('demoApp.Constants', {alternateClassName:'Constants', singleton:true, videoUrl:'resources/videos/video_1.mp4', bannerUrl:'resources/images/banner_1.png', slideUrl:['resources/images/image_2.png', 'resources/images/image_2.png', 'resources/images/image_2.png', 'resources/images/image_2.png'], scanCounter:3, bannerTime:5000});
+Ext.define('demoApp.view.main.Main', {extend:Ext.Panel, xtype:'app-main', itemId:'main', fullscreen:true, layout:{type:'vbox', pack:'center'}, config:{cls:'main'}, controller:'main', items:[{xtype:'carousel', itemId:'slideflow', hidden:false, style:'width:100%;height:100%', listeners:[{initialize:function() {
+  var me = this;
+  var items = Constants.slideUrl.map(function(url) {
+    return {xtype:'container', layout:'center', tpl:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"{src}" /\x3e', data:{src:url}, listeners:[{tap:function() {
+      me.next();
+    }, element:'element'}]};
+  });
+  var lastItem = items[items.length - 1];
+  lastItem.listeners = [{tap:function() {
+    me.fireEvent('tap');
+  }, element:'element'}];
+  this.add(items);
+}}]}, {xtype:'container', itemId:'banner', hidden:true, data:{src:Constants.bannerUrl}, tpl:'\x3cimg style\x3d"width:100%;height:auto" src\x3d"{src}" /\x3e'}, {xtype:'container', itemId:'videoplayer', hidden:true, data:{src:Constants.videoUrl}, tpl:'\n                \x3cvideo id\x3d"video" controls loop preload\x3d"auto" width\x3d"100%" height\x3d"auto"\x3e\n                \x3csource src\x3d"{src}" type\x3d"video/mp4"\x3e\n                Your browser does not support the video tag.\n                \x3c/video\x3e\n            '}], 
 initialize:function() {
   var banner = this.queryById('banner');
   var videoPlayer = this.queryById('videoplayer');
+  var slideflow = this.queryById('slideflow');
   var me = this;
   var counter = 0;
   var handleScan = function() {
@@ -44872,41 +45356,55 @@ initialize:function() {
       }
     });
   };
-  var flow = Promise.resolve().then(function() {
-    return handleScan();
-  }).then(function() {
-    return new Promise(function(resolve, reject) {
-      banner.on('painted', function() {
-        resolve();
+  var flow = function() {
+    return Promise.resolve().then(function() {
+      return new Promise(function(resolve, reject) {
+        me.scan(function(success, text) {
+          if (success) {
+            resolve(text);
+          } else {
+            reject();
+          }
+        });
       });
-      banner.setHidden(false);
-    });
-  }).then(function() {
-    return new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        resolve();
-      }, Constants.bannerTime);
-    });
-  }).then(function() {
-    banner.setHidden(true);
-    videoPlayer.setHidden(false);
-    var elem = videoPlayer.element.getById('video').dom;
-    elem.play();
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else {
-      if (elem.mozRequestFullScreen) {
-        elem.mozRequestFullScreen();
+    }).then(function() {
+      return new Promise(function(resolve, reject) {
+        banner.on('painted', function() {
+          resolve();
+        });
+        slideflow.setHidden(true);
+        banner.setHidden(false);
+      });
+    }).then(function() {
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          resolve();
+        }, Constants.bannerTime);
+      });
+    }).then(function() {
+      banner.setHidden(true);
+      videoPlayer.setHidden(false);
+      var elem = videoPlayer.element.getById('video').dom;
+      elem.play();
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
       } else {
-        if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
+        if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen();
         } else {
-          if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
+          if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+          } else {
+            if (elem.msRequestFullscreen) {
+              elem.msRequestFullscreen();
+            }
           }
         }
       }
-    }
+    });
+  };
+  slideflow.on('tap', function() {
+    flow();
   });
 }, scan:function(callback) {
   cordova.plugins.barcodeScanner.scan(function(result) {

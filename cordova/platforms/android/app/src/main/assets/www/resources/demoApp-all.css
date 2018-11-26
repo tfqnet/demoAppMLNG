@@ -2296,6 +2296,18 @@ div.x-trigger.x-grouped {
     max-width: 90vw;
     max-height: 90vh;
 }
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/carousel/Carousel.scss:1 */
+.x-carousel-body-el {
+    position: relative;
+    overflow: hidden;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/carousel/Carousel.scss:6 */
+.x-carousel-item,
+.x-carousel-item > * {
+    position: absolute !important;
+    width: 100%;
+    height: 100%;
+}
 /* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/panel/Title.scss:1 */
 .x-paneltitle {
     display: flex;
@@ -2431,6 +2443,41 @@ div.x-trigger.x-grouped {
 /* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/panel/Title.scss:146 */
 .x-paneltitle.x-icon-align-bottom.x-rotate-270 .x-body-el {
     flex-direction: row-reverse;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Fit.scss:1 */
+.x-layout-fit {
+    display: flex;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Fit.scss:5 */
+.x-layout-fit-item {
+    flex: 1 1;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Fit.scss:8 */
+.x-ie11 .x-layout-fit-item {
+    flex-basis: auto;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Fit.scss:17 */
+.x-body-sizer-el > * > .x-layout-fit-item {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Center.scss:1 */
+.x-layout-center {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Center.scss:6 */
+.x-layout-center-item,
+.x-layout-center > .x-innerhtml {
+    margin: auto;
+}
+/* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/layout/Center.scss:14 */
+.x-layout-center-item.x-widthed {
+    flex-shrink: 0;
 }
 /* /Volumes/Store/Projects/demoAppMLNG/ext/modern/theme-base/sass/src/panel/Header.scss:1 */
 .x-panelheader {
