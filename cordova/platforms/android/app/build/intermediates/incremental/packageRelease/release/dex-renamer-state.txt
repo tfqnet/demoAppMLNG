@@ -1,0 +1,4 @@
+#Tue Mar 26 22:31:16 ICT 2019
+base.0=/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/transforms/dex/release/0
+renamed.0=classes.dex
+file.0=/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/transforms/dex/release/0/classes.dex

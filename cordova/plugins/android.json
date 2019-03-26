@@ -13,6 +13,9 @@
     "phonegap-plugin-barcodescanner": {
       "ANDROID_SUPPORT_V4_VERSION": "27.+",
       "PACKAGE_NAME": "my.com.petronas.demoApp"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "my.com.petronas.demoApp"
     }
   },
   "dependent_plugins": {}

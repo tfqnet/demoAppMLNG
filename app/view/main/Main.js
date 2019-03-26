@@ -24,7 +24,7 @@ Ext.define('demoApp.view.main.Main', {
         {
             xtype: 'carousel',
             itemId: 'slideflow',
-            hidden: false,
+            hidden: true,
             style: 'width:100%;height:100%',
             listeners: [
                 {
@@ -64,6 +64,23 @@ Ext.define('demoApp.view.main.Main', {
         },
         {
             xtype: 'container',
+            layout: 'center',
+            itemId: 'image',
+            tpl: '<img style="width:100%;height:auto" src="{src}" />',
+            data: {
+                src: Constants.imageUrl
+            },
+            listeners: [
+                {
+                    tap: function () {
+                        this.component.fireEvent('tap', this.component)
+                    },
+                    element: 'element'
+                }
+            ]
+        },
+        {
+            xtype: 'container',
             itemId: 'banner',
             hidden: true,
             data: {
@@ -79,41 +96,38 @@ Ext.define('demoApp.view.main.Main', {
                 src: Constants.videoUrl
             },
             tpl: `
-                <video id="video" controls loop preload="auto" width="100%" height="auto">
+                <video id="video" controls preload="auto" width="100%" height="auto">
                 <source src="{src}" type="video/mp4">
                 Your browser does not support the video tag.
                 </video>
-            `
+            `,
+            listeners: [
+                {
+                    painted: function () {
+                        var me = this.component
+                        this.query('video', true, true).addEventListener('ended', function () {
+                            me.fireEvent('videofinished')
+                        }, false);
+                    },
+                    element: 'element',
+                }
+            ]
         }
     ],
+    openUrlInApp: function (url) {
+        var options = []
+
+        options.push('location=no')
+        options.push('clearcache=yes')
+        options.push('clearsessioncache=yes')
+
+        cordova.InAppBrowser.open(url, '_blank', options.join(','));
+    },
     initialize: function () {
         var banner = this.queryById('banner')
         var videoPlayer = this.queryById('videoplayer')
-        var slideflow = this.queryById('slideflow')
+        var image = this.queryById('image')
         var me = this
-
-        var counter = 0
-        var handleScan = function () {
-            return new Promise(function (resolve, reject) {
-                try {
-                    me.scan(function (success, text) {
-                        if (success) {
-                            resolve(text)
-                        } else {
-                            reject()
-                        }
-                    })
-                } catch (ex) {
-                    reject()
-                }
-            }).catch(function (error) {
-                console.log('retry', counter)
-                counter++
-                if (counter < Constants.scanCounter) {
-                    return handleScan()
-                }
-            })
-        }
 
         var flow = function () {
             return Promise.resolve()
@@ -129,36 +143,35 @@ Ext.define('demoApp.view.main.Main', {
                     })
                 }).then(function () {
                     return new Promise(function (resolve, reject) {
-                        banner.on('painted', function () {
+                        image.setHidden(true)
+                        videoPlayer.setHidden(false)
+                        var elem = videoPlayer.element.getById('video').dom
+                        elem.play()
+                        if (elem.requestFullscreen) {
+                            elem.requestFullscreen();
+                        } else if (elem.mozRequestFullScreen) {
+                            elem.mozRequestFullScreen();
+                        } else if (elem.webkitRequestFullscreen) {
+                            elem.webkitRequestFullscreen();
+                        } else if (elem.msRequestFullscreen) {
+                            elem.msRequestFullscreen();
+                        }
+
+                        videoPlayer.on('videofinished', function () {
                             resolve()
-                        })
-                        slideflow.setHidden(true)
-                        banner.setHidden(false)
+                        }, null, {
+                                single: true
+                            })
                     })
                 }).then(function () {
-                    return new Promise(function (resolve, reject) {
-                        setTimeout(function () {
-                            resolve()
-                        }, Constants.bannerTime)
-                    })
-                }).then(function () {
-                    banner.setHidden(true)
-                    videoPlayer.setHidden(false)
-                    var elem = videoPlayer.element.getById('video').dom
-                    elem.play()
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.mozRequestFullScreen) {
-                        elem.mozRequestFullScreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
+                    me.openUrlInApp(Constants.url)
+
+                    image.setHidden(false)
+                    videoPlayer.setHidden(true)
                 })
         }
 
-        slideflow.on('tap', function () {
+        image.on('tap', function () {
             flow()
         })
     },

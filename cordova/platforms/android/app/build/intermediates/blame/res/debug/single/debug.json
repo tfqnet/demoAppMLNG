@@ -16,12 +16,12 @@
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/drawable-hdpi/launcher_icon.png"
     },
     {
-        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-land-xxxhdpi_screen.png.flat",
-        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxxhdpi/screen.png"
-    },
-    {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi_icon.png.flat",
         "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/mipmap-xhdpi/icon.png"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-land-xxxhdpi_screen.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxxhdpi/screen.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_normal_pressed.9.png.flat",
@@ -52,6 +52,14 @@
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/raw/beep.ogg"
     },
     {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_remove.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_remove.png"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_action_remove.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_remove.png"
+    },
+    {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-port-xhdpi_screen.png.flat",
         "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-xhdpi/screen.png"
     },
@@ -74,6 +82,10 @@
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/mipmap-ldpi_icon.png.flat",
         "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/mipmap-ldpi/icon.png"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_action_previous_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_previous_item.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/menu_history.xml.flat",
@@ -148,12 +160,20 @@
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-media-compat-27.1.1.aar/4d4e4eafe430cf08619b846410e98675/res/layout/notification_template_big_media_narrow_custom.xml"
     },
     {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_action_next_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_next_item.png"
+    },
+    {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout_notification_action_tombstone.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-compat-27.1.1.aar/c899993ccb18e0200f8388e44c15dc7e/res/layout/notification_action_tombstone.xml"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout-ldpi_capture.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/layout-ldpi/capture.xml"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_previous_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_previous_item.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_low_normal.9.png.flat",
@@ -166,6 +186,14 @@
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout-land_encode.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/layout-land/encode.xml"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_action_next_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_next_item.png"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_next_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_next_item.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_low_pressed.9.png.flat",
@@ -198,6 +226,10 @@
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout-v21_notification_action.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-compat-27.1.1.aar/c899993ccb18e0200f8388e44c15dc7e/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_remove.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_remove.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notify_panel_notification_icon_bg.png.flat",
@@ -234,6 +266,10 @@
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout-land_share.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/layout-land/share.xml"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_action_previous_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_previous_item.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout_notification_action.xml.flat",
@@ -284,6 +320,10 @@
         "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-ldpi/screen.png"
     },
     {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_previous_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_previous_item.png"
+    },
+    {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable_notification_bg_low.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-compat-27.1.1.aar/c899993ccb18e0200f8388e44c15dc7e/res/drawable/notification_bg_low.xml"
     },
@@ -310,6 +350,14 @@
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout_encode.xml.flat",
         "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/res/layout/encode.xml"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_next_item.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_next_item.png"
+    },
+    {
+        "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_action_remove.png.flat",
+        "source": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_remove.png"
     },
     {
         "merged": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/layout_search_book_contents_list_item.xml.flat",

@@ -9,11 +9,12 @@ module.exports = [
     ]
   },
   {
-    "id": "cordova-plugin-streaming-media.StreamingMedia",
-    "file": "plugins/cordova-plugin-streaming-media/www/StreamingMedia.js",
-    "pluginId": "cordova-plugin-streaming-media",
+    "id": "cordova-plugin-inappbrowser.inappbrowser",
+    "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+    "pluginId": "cordova-plugin-inappbrowser",
     "clobbers": [
-      "streamingMedia"
+      "cordova.InAppBrowser.open",
+      "window.open"
     ]
   }
 ];
@@ -22,7 +23,7 @@ module.exports.metadata =
 {
   "cordova-plugin-whitelist": "1.3.3",
   "phonegap-plugin-barcodescanner": "8.0.0",
-  "cordova-plugin-streaming-media": "2.2.0"
+  "cordova-plugin-inappbrowser": "3.0.0"
 };
 // BOTTOM OF METADATA
 });

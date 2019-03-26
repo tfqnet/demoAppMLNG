@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 3.0.0">
+
+    <issue
+        id="NewApi"
+        severity="Error"
+        message="Call requires API level 17 (current min is 16): android.webkit.WebSettings#setMediaPlaybackRequiresUserGesture"
+        category="Correctness"
+        priority="6"
+        summary="Calling new methods on older versions"
+        explanation="This check scans through all the Android API calls in the application and warns about any calls that are not available on **all** versions targeted by this application (according to its minimum SDK attribute in the manifest).&#xA;&#xA;If you really want to use this API and don&apos;t need to support older devices just set the `minSdkVersion` in your `build.gradle` or `AndroidManifest.xml` files.&#xA;&#xA;If your code is **deliberately** accessing newer APIs, and you have ensured (e.g. with conditional execution) that this code will only ever be called on a supported platform, then you can annotate your class or method with the `@TargetApi` annotation specifying the local minimum SDK to apply, such as `@TargetApi(11)`, such that this check considers 11 rather than your manifest file&apos;s minimum SDK as the required API level.&#xA;&#xA;If you are deliberately setting `android:` attributes in style definitions, make sure you place this in a `values-v`*NN* folder in order to avoid running into runtime conflicts on certain devices where manufacturers have added custom attributes whose ids conflict with the new ones on later platforms.&#xA;&#xA;Similarly, you can use tools:targetApi=&quot;11&quot; in an XML file to indicate that the element will only be inflated in an adequate context."
+        errorLine1="        ws.setMediaPlaybackRequiresUserGesture(false);"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/java/my/com/petronas/demoApp/MainActivity.java"
+            line="45"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        severity="Warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        category="Correctness"
+        priority="6"
+        summary="Target SDK attribute is not targeting latest version"
+        explanation="When your application runs on a version of Android that is more recent than your `targetSdkVersion` specifies that it has been tested with, various compatibility modes kick in. This ensures that your application continues to work, but it may look out of place. For example, if the `targetSdkVersion` is less than 14, your app may get an option button in the UI.&#xA;&#xA;To fix this issue, set the `targetSdkVersion` to the highest available value. Then test your app to make sure everything works correctly. You may want to consult the compatibility notes to see what changes apply to each version you are adding support for: http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        url="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        urls="http://developer.android.com/reference/android/os/Build.VERSION_CODES.html"
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;16&quot; android:targetSdkVersion=&quot;26&quot; />"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="14"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="ManifestOrder"
+        severity="Warning"
+        message="`&lt;uses-sdk>` tag appears after `&lt;application>` tag"
+        category="Correctness"
+        priority="5"
+        summary="Incorrect order of elements in manifest"
+        explanation="The &lt;application> tag should appear after the elements which declare which version you need, which features you need, which libraries you need, and so on. In the past there have been subtle bugs (such as themes not getting applied correctly) when the `&lt;application>` tag appears before some of these other elements, so it&apos;s best to order your manifest in the logical dependency order."
+        errorLine1="    &lt;uses-sdk android:minSdkVersion=&quot;16&quot; android:targetSdkVersion=&quot;26&quot; />"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="14"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="A newer version of com.android.tools.build:gradle than 3.0.0 is available: 3.3.2"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1="        classpath &apos;com.android.tools.build:gradle:3.0.0&apos;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build.gradle"
+            line="32"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="A newer version of com.android.support:support-v4 than 27.+ is available: 28.0.0"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1="    compile &quot;com.android.support:support-v4:27.+&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build.gradle"
+            line="263"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="GradleDynamicVersion"
+        severity="Warning"
+        message="Avoid using + in version numbers; can lead to unpredictable and unrepeatable builds (com.android.support:support-v4:27.+)"
+        category="Correctness"
+        priority="4"
+        summary="Gradle Dynamic Version"
+        explanation="Using `+` in dependencies lets you automatically pick up the latest available version rather than a specific, named version. However, this is not recommended; your builds are not repeatable; you may have tested with a slightly different version than what the build server used. (Using a dynamic version as the major version number is more problematic than using it in the minor version position.)"
+        errorLine1="    compile &quot;com.android.support:support-v4:27.+&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build.gradle"
+            line="263"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="GradleOverrides"
+        severity="Warning"
+        message="This `versionCode` value (`10000`) is not used; it is always overridden by the value specified in the Gradle build script (`10000`)"
+        category="Correctness"
+        priority="4"
+        summary="Value overridden by Gradle build script"
+        explanation="The value of (for example) `minSdkVersion` is only used if it is not specified in the `build.gradle` build scripts. When specified in the Gradle build scripts, the manifest value is ignored and can be misleading, so should be removed to avoid ambiguity."
+        errorLine1="&lt;manifest android:hardwareAccelerated=&quot;true&quot; android:versionCode=&quot;10000&quot; android:versionName=&quot;1.0.0&quot; package=&quot;my.com.petronas.demoApp&quot; xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="2"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="AllowBackup"
+        severity="Warning"
+        message="On SDK version 23 and up, your app data will be automatically backed up and restored on app install. Consider adding the attribute `android:fullBackupContent` to specify an `@xml` resource which configures which files to backup. More info: https://developer.android.com/training/backup/autosyncapi.html"
+        category="Security"
+        priority="3"
+        summary="AllowBackup/FullBackupContent Problems"
+        explanation="The `allowBackup` attribute determines if an application&apos;s data can be backed up and restored. It is documented at http://developer.android.com/reference/android/R.attr.html#allowBackup&#xA;&#xA;By default, this flag is set to `true`. When this flag is set to `true`, application data can be backed up and restored by the user using `adb backup` and `adb restore`.&#xA;&#xA;This may have security consequences for an application. `adb backup` allows users who have enabled USB debugging to copy application data off of the device. Once backed up, all application data can be read by the user. `adb restore` allows creation of application data from a source specified by the user. Following a restore, applications should not assume that the data, file permissions, and directory permissions were created by the application itself.&#xA;&#xA;Setting `allowBackup=&quot;false&quot;` opts an application out of both backup and restore.&#xA;&#xA;To fix this warning, decide whether your application should support backup, and explicitly set `android:allowBackup=(true|false)&quot;`.&#xA;&#xA;If not set to false, and if targeting API 23 or later, lint will also warn that you should set `android:fullBackupContent` to configure auto backup."
+        url="https://developer.android.com/training/backup/autosyncapi.html"
+        urls="https://developer.android.com/training/backup/autosyncapi.html,http://developer.android.com/reference/android/R.attr.html#allowBackup"
+        errorLine1="    &lt;application android:hardwareAccelerated=&quot;true&quot; android:icon=&quot;@mipmap/icon&quot; android:label=&quot;@string/app_name&quot; android:supportsRtl=&quot;true&quot;>"
+        errorLine2="    ^"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="4"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="AllowBackup"
+        severity="Warning"
+        message="Should explicitly set `android:allowBackup` to `true` or `false` (it&apos;s `true` by default, and that can have some security implications for the application&apos;s data)"
+        category="Security"
+        priority="3"
+        summary="AllowBackup/FullBackupContent Problems"
+        explanation="The `allowBackup` attribute determines if an application&apos;s data can be backed up and restored. It is documented at http://developer.android.com/reference/android/R.attr.html#allowBackup&#xA;&#xA;By default, this flag is set to `true`. When this flag is set to `true`, application data can be backed up and restored by the user using `adb backup` and `adb restore`.&#xA;&#xA;This may have security consequences for an application. `adb backup` allows users who have enabled USB debugging to copy application data off of the device. Once backed up, all application data can be read by the user. `adb restore` allows creation of application data from a source specified by the user. Following a restore, applications should not assume that the data, file permissions, and directory permissions were created by the application itself.&#xA;&#xA;Setting `allowBackup=&quot;false&quot;` opts an application out of both backup and restore.&#xA;&#xA;To fix this warning, decide whether your application should support backup, and explicitly set `android:allowBackup=(true|false)&quot;`.&#xA;&#xA;If not set to false, and if targeting API 23 or later, lint will also warn that you should set `android:fullBackupContent` to configure auto backup."
+        url="https://developer.android.com/training/backup/autosyncapi.html"
+        urls="https://developer.android.com/training/backup/autosyncapi.html,http://developer.android.com/reference/android/R.attr.html#allowBackup"
+        errorLine1="    &lt;application android:hardwareAccelerated=&quot;true&quot; android:icon=&quot;@mipmap/icon&quot; android:label=&quot;@string/app_name&quot; android:supportsRtl=&quot;true&quot;>"
+        errorLine2="    ^"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="4"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.xml.config` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        errorLine1="&lt;widget id=&quot;my.com.petronas.demoApp&quot; version=&quot;1.0.0&quot; xmlns=&quot;http://www.w3.org/ns/widgets&quot; xmlns:cdv=&quot;http://cordova.apache.org/ns/1.0&quot;>"
+        errorLine2="^"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/xml/config.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.drawable.ic_action_next_item` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_next_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_next_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_next_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_next_item.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.drawable.ic_action_previous_item` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_previous_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_previous_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_previous_item.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_previous_item.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.drawable.ic_action_remove` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-hdpi/ic_action_remove.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-mdpi/ic_action_remove.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xhdpi/ic_action_remove.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-xxhdpi/ic_action_remove.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.drawable.screen` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-hdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-ldpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-mdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxxhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-hdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-ldpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-mdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-xhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-xxhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-port-xxxhdpi/screen.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        severity="Warning"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details"
+        category="Usability:Icons"
+        priority="6"
+        summary="The launcher icon shape should use a distinct silhouette"
+        explanation="According to the Android Design Guide (http://developer.android.com/design/style/iconography.html) your launcher icons should &quot;use a distinct silhouette&quot;, a &quot;three-dimensional, front view, with a slight perspective as if viewed from above, so that users perceive some depth.&quot;&#xA;&#xA;The unique silhouette implies that your launcher icon should not be a filled square."
+        url="http://developer.android.com/design/style/iconography.html"
+        urls="http://developer.android.com/design/style/iconography.html">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/mipmap-xxhdpi/icon.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        severity="Warning"
+        message="The image `screen.png` varies significantly in its density-independent (dip) size across the various density versions: drawable-land-hdpi/screen.png: 533x320 dp (800x480 px), drawable-land-ldpi/screen.png: 427x267 dp (320x200 px), drawable-land-mdpi/screen.png: 480x320 dp (480x320 px), drawable-land-xhdpi/screen.png: 640x360 dp (1280x720 px), drawable-land-xxhdpi/screen.png: 533x320 dp (1600x960 px), drawable-land-xxxhdpi/screen.png: 480x320 dp (1920x1280 px)"
+        category="Usability:Icons"
+        priority="5"
+        summary="Icon density-independent size validation"
+        explanation="Checks the all icons which are provided in multiple densities, all compute to roughly the same density-independent pixel (`dip`) size. This catches errors where images are either placed in the wrong folder, or icons are changed to new sizes but some folders are forgotten.">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-ldpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxxhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-mdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xxhdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-hdpi/screen.png"/>
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/res/drawable-land-xhdpi/screen.png"/>
+    </issue>
+
+    <issue
+        id="GoogleAppIndexingWarning"
+        severity="Warning"
+        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details."
+        category="Usability"
+        priority="5"
+        summary="Missing support for Firebase App Indexing"
+        explanation="Adds URLs to get your app into the Google index, to get installs and traffic to your app from Google Search."
+        url="https://g.co/AppIndexing/AndroidStudio"
+        urls="https://g.co/AppIndexing/AndroidStudio"
+        errorLine1="    &lt;application android:hardwareAccelerated=&quot;true&quot; android:icon=&quot;@mipmap/icon&quot; android:label=&quot;@string/app_name&quot; android:supportsRtl=&quot;true&quot;>"
+        errorLine2="    ^"
+        quickfix="studio">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml"
+            line="4"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        severity="Warning"
+        message="Use &quot;`Gravity.START`&quot; instead of &quot;`Gravity.LEFT`&quot; to ensure correct behavior in right-to-left locales"
+        category="Internationalization:Bidirectional Text"
+        priority="5"
+        summary="Using left/right instead of start/end attributes"
+        explanation="Using `Gravity#LEFT` and `Gravity#RIGHT` can lead to problems when a layout is rendered in locales where text flows from right to left. Use `Gravity#START` and `Gravity#END` instead. Similarly, in XML `gravity` and `layout_gravity` attributes, use `start` rather than `left`.&#xA;&#xA;For XML attributes such as paddingLeft and `layout_marginLeft`, use `paddingStart` and `layout_marginStart`. **NOTE**: If your `minSdkVersion` is less than 17, you should add **both** the older left/right attributes **as well as** the new start/right attributes. On older platforms, where RTL is not supported and the start/right attributes are unknown and therefore ignored, you need the older left/right attributes. There is a separate lint check which catches that type of error.&#xA;&#xA;(Note: For `Gravity#LEFT` and `Gravity#START`, you can use these constants even when targeting older platforms, because the `start` bitmask is a superset of the `left` bitmask. Therefore, you can use `gravity=&quot;start&quot;` rather than `gravity=&quot;left|start&quot;`.)"
+        errorLine1="                toolbar.setHorizontalGravity(Gravity.LEFT);"
+        errorLine2="                                                     ~~~~">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/java/org/apache/cordova/inappbrowser/InAppBrowser.java"
+            line="723"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        severity="Warning"
+        message="Use &quot;`Gravity.START`&quot; instead of &quot;`Gravity.LEFT`&quot; to ensure correct behavior in right-to-left locales"
+        category="Internationalization:Bidirectional Text"
+        priority="5"
+        summary="Using left/right instead of start/end attributes"
+        explanation="Using `Gravity#LEFT` and `Gravity#RIGHT` can lead to problems when a layout is rendered in locales where text flows from right to left. Use `Gravity#START` and `Gravity#END` instead. Similarly, in XML `gravity` and `layout_gravity` attributes, use `start` rather than `left`.&#xA;&#xA;For XML attributes such as paddingLeft and `layout_marginLeft`, use `paddingStart` and `layout_marginStart`. **NOTE**: If your `minSdkVersion` is less than 17, you should add **both** the older left/right attributes **as well as** the new start/right attributes. On older platforms, where RTL is not supported and the start/right attributes are unknown and therefore ignored, you need the older left/right attributes. There is a separate lint check which catches that type of error.&#xA;&#xA;(Note: For `Gravity#LEFT` and `Gravity#START`, you can use these constants even when targeting older platforms, because the `start` bitmask is a superset of the `left` bitmask. Therefore, you can use `gravity=&quot;start&quot;` rather than `gravity=&quot;left|start&quot;`.)"
+        errorLine1="                actionButtonContainer.setHorizontalGravity(Gravity.LEFT);"
+        errorLine2="                                                                   ~~~~">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/java/org/apache/cordova/inappbrowser/InAppBrowser.java"
+            line="729"
+            column="68"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        severity="Warning"
+        message="Use &quot;`Gravity.START`&quot; instead of &quot;`Gravity.LEFT`&quot; to ensure correct behavior in right-to-left locales"
+        category="Internationalization:Bidirectional Text"
+        priority="5"
+        summary="Using left/right instead of start/end attributes"
+        explanation="Using `Gravity#LEFT` and `Gravity#RIGHT` can lead to problems when a layout is rendered in locales where text flows from right to left. Use `Gravity#START` and `Gravity#END` instead. Similarly, in XML `gravity` and `layout_gravity` attributes, use `start` rather than `left`.&#xA;&#xA;For XML attributes such as paddingLeft and `layout_marginLeft`, use `paddingStart` and `layout_marginStart`. **NOTE**: If your `minSdkVersion` is less than 17, you should add **both** the older left/right attributes **as well as** the new start/right attributes. On older platforms, where RTL is not supported and the start/right attributes are unknown and therefore ignored, you need the older left/right attributes. There is a separate lint check which catches that type of error.&#xA;&#xA;(Note: For `Gravity#LEFT` and `Gravity#START`, you can use these constants even when targeting older platforms, because the `start` bitmask is a superset of the `left` bitmask. Therefore, you can use `gravity=&quot;start&quot;` rather than `gravity=&quot;left|start&quot;`.)"
+        errorLine1="                footer.setHorizontalGravity(Gravity.LEFT);"
+        errorLine2="                                                    ~~~~">
+        <location
+            file="/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/java/org/apache/cordova/inappbrowser/InAppBrowser.java"
+            line="827"
+            column="53"/>
+    </issue>
+
+</issues>

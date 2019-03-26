@@ -94,6 +94,21 @@
             ]
         },
         {
+            "outputFile": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/values-ka_values-ka.arsc.flat",
+            "map": [
+                {
+                    "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-compat-27.1.1.aar/c899993ccb18e0200f8388e44c15dc7e/res/values-ka/values-ka.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        },
+        {
             "outputFile": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/values_values.arsc.flat",
             "map": [
                 {
@@ -185,21 +200,6 @@
                         "endLines": "49,50,58,60,141,142,143,144,145,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,163,164,169,170,174,175,176,177,179,306,323,327,329,335,337,339,340",
                         "endColumns": "68,62,57,73,69,67,71,69,60,60,60,61,63,61,60,67,99,59,65,72,68,56,51,61,71,75,34,34,49,33,34,34,69,70,116,12,109,12,128,71,66",
                         "endOffsets": "1461,1524,2001,2148,5716,5784,5856,5926,5987,6092,6153,6215,6279,6341,6402,6470,6570,6630,6696,6769,6838,6895,6947,7009,7129,7205,7415,7450,7627,7661,7696,7731,7861,16734,17724,17925,18101,18485,18680,18819,18886"
-                    }
-                }
-            ]
-        },
-        {
-            "outputFile": "/Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/build/intermediates/res/merged/debug/values-ka_values-ka.arsc.flat",
-            "map": [
-                {
-                    "source": "/Users/trungle/.gradle/caches/transforms-1/files-1.1/support-compat-27.1.1.aar/c899993ccb18e0200f8388e44c15dc7e/res/values-ka/values-ka.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
                     }
                 }
             ]
