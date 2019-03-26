@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
+ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
 MERGED from [:barcodescanner-release-2.1.5:] /Users/trungle/.gradle/caches/transforms-1/files-1.1/barcodescanner-release-2.1.5.aar/d60de2789847932305befd20cf450141/AndroidManifest.xml:2:1-14:12
 MERGED from [com.android.support:support-v4:27.1.1] /Users/trungle/.gradle/caches/transforms-1/files-1.1/support-v4-27.1.1.aar/4245240f9bcb6bcc4b203166f4f5b01f/AndroidManifest.xml:17:1-22:12
 MERGED from [:CordovaLib] /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/CordovaLib/build/intermediates/manifests/full/debug/AndroidManifest.xml:20:1-27:12
@@ -16,9 +16,9 @@ MERGED from [android.arch.lifecycle:runtime:1.1.0] /Users/trungle/.gradle/caches
 MERGED from [android.arch.lifecycle:livedata-core:1.1.0] /Users/trungle/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.0.aar/fac64ab7c425d1c39953616ed5acab69/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:viewmodel:1.1.0] /Users/trungle/.gradle/caches/transforms-1/files-1.1/viewmodel-1.1.0.aar/74e2671f9ada0017bfa0b9dc00d92882/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.0] /Users/trungle/.gradle/caches/transforms-1/files-1.1/runtime-1.1.0.aar/e6d152555eb4a1399bd9d16fd02a4e7a/AndroidManifest.xml:17:1-22:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-18:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
 	package
 		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:2:102-135
 		INJECTED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml
@@ -145,9 +145,13 @@ uses-permission#android.permission.FLASHLIGHT
 ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:16:5-69
 	android:name
 		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:16:22-66
-uses-feature#android.hardware.camera
-ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:17:5-84
-	android:required
-		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:17:58-81
+uses-permission#android.permission.INTERNET
+ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:17:5-67
 	android:name
-		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:17:19-57
+		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:17:22-64
+uses-feature#android.hardware.camera
+ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:18:5-84
+	android:required
+		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:18:58-81
+	android:name
+		ADDED from /Volumes/Store/Projects/demoAppMLNG/cordova/platforms/android/app/src/main/AndroidManifest.xml:18:19-57
