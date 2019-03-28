@@ -1,12 +1,12 @@
 Ext.define('demoApp.Constants', {
     alternateClassName: 'Constants',
     singleton: true,
-    videoUrl: 'resources/videos/video_1.mp4',
-    bannerUrl: 'resources/images/RENTAP-App-04.png',
+    videoUrl: 'resources/videos/video_2.mp4',
+    bannerUrl: 'resources/images/img_new.jpeg',
     //slideUrl: ['resources/images/image_2.png','resources/images/image_2.png','resources/images/image_2.png','resources/images/image_2.png'],
     slideUrl: ['resources/images/RENTAP-App-01.png','resources/images/RENTAP-App-02.png','resources/images/RENTAP-App-03.png'],//RENTAP-App-01.png
-    imageUrl: 'resources/images/RENTAP-App-01.png',
-    url: 'https://www.google.com',
+    imageUrl: 'resources/images/img_new.jpeg',
+    url: 'https://energy.vertikaliti.com/#/',
     scanCounter: 3,
     bannerTime: 5000
 })
